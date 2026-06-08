@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
+import { STATUS_LABELS } from '../utils/orderStatus';
 
 function StatCard({ title, value, color, link, loading }) {
   return (
@@ -59,13 +60,6 @@ export default function Dashboard() {
     load();
   }, []);
 
-  const statusLabels = {
-    pending: { label: 'Pendente', bg: 'warning', text: 'dark' },
-    processing: { label: 'Em andamento', bg: 'primary', text: 'white' },
-    completed: { label: 'Concluído', bg: 'success', text: 'white' },
-    cancelled: { label: 'Cancelado', bg: 'danger', text: 'white' },
-  };
-
   return (
     <Layout>
       <div className="mb-4">
@@ -107,7 +101,7 @@ export default function Dashboard() {
                 </thead>
                 <tbody>
                   {recentOrders.map((order) => {
-                    const s = statusLabels[order.status] || { label: order.status, bg: 'secondary', text: 'white' };
+                    const s = STATUS_LABELS[order.status] || { label: order.status, bg: 'secondary', text: 'white' };
                     return (
                       <tr key={order.id}>
                         <td>

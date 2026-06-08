@@ -5,14 +5,7 @@ import {
 import Layout from '../components/Layout';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
-
-const STATUS_OPTIONS = ['pending', 'processing', 'completed', 'cancelled'];
-const STATUS_LABELS = {
-  pending: { label: 'Pendente', bg: 'warning', text: 'dark' },
-  processing: { label: 'Em andamento', bg: 'primary', text: 'white' },
-  completed: { label: 'Concluído', bg: 'success', text: 'white' },
-  cancelled: { label: 'Cancelado', bg: 'danger', text: 'white' },
-};
+import { STATUS_OPTIONS, STATUS_LABELS } from '../utils/orderStatus';
 
 export default function Orders() {
   const { user } = useAuth();
