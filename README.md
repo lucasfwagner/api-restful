@@ -1,51 +1,18 @@
-# Projeto Universitário — Loja Online
+# Trabalho Final — API RESTful + React
 
-API RESTful com Node.js + React
+Projeto da disciplina. Fiz uma loja online simples com back-end em Node.js e front-end em React.
 
-## Tecnologias Utilizadas
+## Tecnologias
 
-### Back-end
-- **Node.js** + **Express** — servidor HTTP e roteamento
-- **PostgreSQL** — banco de dados relacional
-- **Prisma ORM** — acesso e migrations do banco
-- **JWT (jsonwebtoken)** — autenticação por token
-- **bcryptjs** — hash de senhas
-- **Jest** + **Supertest** — testes de integração
+**Back-end:** Node.js, Express, PostgreSQL, Prisma, JWT, bcryptjs, Jest, Supertest
 
-### Front-end
-- **React 18** + **Vite** — SPA moderna
-- **React Bootstrap** — componentes de UI
-- **React Router v6** — roteamento de páginas
-- **Axios** — cliente HTTP com interceptors
-- **Cypress** — testes E2E automatizados
+**Front-end:** React, Vite, React Bootstrap, React Router, Axios, Cypress
 
-## Recursos da API
+## Como rodar
 
-| Recurso    | Descrição                                   |
-|------------|---------------------------------------------|
-| `users`    | Autenticação e perfil de usuário            |
-| `products` | Catálogo de produtos (CRUD)                 |
-| `orders`   | Pedidos com relacionamento N-N de produtos  |
+Precisa ter Node.js 18+ e PostgreSQL instalados.
 
-**Relacionamento:** um pedido possui muitos produtos via `order_items`.  
-Rota especial: `GET /api/orders/:id/products`
-
----
-
-## Pré-requisitos
-
-- Node.js 18+
-- PostgreSQL 14+
-
----
-
-## Como Rodar
-
-> Para rodar o projeto você precisará de **2 terminais abertos ao mesmo tempo**: um para o back-end e outro para o front-end.
-
-### 1. Banco de dados
-
-No terminal, como o usuário `postgres`, crie o usuário e os bancos:
+### 1. Criar os bancos de dados
 
 ```bash
 psql -U postgres -c "CREATE USER projeto_user WITH PASSWORD 'projeto123' CREATEDB;"
@@ -58,15 +25,10 @@ psql -U postgres -c "CREATE DATABASE projeto_test_db OWNER projeto_user;"
 ```bash
 cd backend
 npm install
-```
-
-Copie o arquivo de variáveis de ambiente:
-
-```bash
 cp .env.example .env
 ```
 
-Edite o `.env` com os dados do banco criado acima:
+Edita o `.env`:
 
 ```env
 DATABASE_URL="postgresql://projeto_user:projeto123@localhost:5432/projeto_db"
@@ -76,19 +38,13 @@ PORT=3001
 NODE_ENV=development
 ```
 
-Execute as migrations e popule o banco:
-
 ```bash
 npx prisma migrate dev --name init
 npm run db:seed
 npm run dev
 ```
 
-O servidor estará rodando em `http://localhost:3001`.
-
-### 3. Front-end
-
-> **Abra um novo terminal** (mantenha o do back-end rodando).
+### 3. Front-end (novo terminal)
 
 ```bash
 cd frontend
@@ -96,107 +52,43 @@ npm install
 npm run dev
 ```
 
-Acesse: **http://localhost:3000**
+Acessa em: http://localhost:3000
 
----
+## Usuários criados pelo seed
 
-## Usuários padrão (criados pelo seed)
-
-| Email                  | Senha    | Perfil |
-|------------------------|----------|--------|
-| admin@exemplo.com      | admin123 | Admin  |
-| usuario@exemplo.com    | user123  | User   |
-
-### Dados de exemplo criados pelo seed
-
-- 3 produtos: Notebook Dell (R$ 3.499,90), Mouse Logitech (R$ 549,90), Teclado Mecânico (R$ 799,90)
-- 1 pedido já criado para o usuário padrão (status: `completed`)
-
----
-
-## Endpoints da API
-
-### Autenticação (público)
-```
-POST /api/auth/signup   — registrar novo usuário
-POST /api/auth/login    — login (retorna token JWT)
-```
-
-### Usuários (requer autenticação)
-```
-GET  /api/users/me      — perfil do usuário logado
-PUT  /api/users/me      — atualizar perfil
-GET  /api/users/        — listar todos (somente admin)
-```
-
-### Produtos
-```
-GET    /api/products         — listar todos (público, suporta paginação e busca)
-GET    /api/products/:id     — detalhes de um produto (público)
-POST   /api/products         — criar produto (somente admin)
-PUT    /api/products/:id     — atualizar produto (somente admin)
-DELETE /api/products/:id     — excluir produto (somente admin)
-```
-
-### Pedidos (requer autenticação)
-```
-GET    /api/orders              — listar pedidos (usuário vê os seus; admin vê todos)
-POST   /api/orders              — criar pedido
-GET    /api/orders/:id          — detalhes com itens
-PUT    /api/orders/:id          — atualizar status
-DELETE /api/orders/:id          — excluir pedido
-GET    /api/orders/:id/products — listar produtos de um pedido
-```
-
----
+| Email               | Senha    | Tipo  |
+|---------------------|----------|-------|
+| admin@exemplo.com   | admin123 | Admin |
+| usuario@exemplo.com | user123  | User  |
 
 ## Testes
 
-### Back-end (Jest + Supertest)
-
-O arquivo `.env.test` já está configurado e usa um banco separado (`projeto_test_db`).
-
+**Back-end** (pode rodar sem o servidor ligado):
 ```bash
 cd backend
 npm test
-npm run test:coverage
 ```
 
-### Front-end (Cypress E2E)
+**Front-end com Cypress** (precisa do back-end e do front-end rodando):
 
-Com o frontend e o backend rodando:
+Abre dois terminais:
 
+Terminal 1 — back-end:
+```bash
+cd backend
+npm run dev
+```
+
+Terminal 2 — front-end:
 ```bash
 cd frontend
-npm run cy:open    # abre a interface gráfica do Cypress
-npm run cy:run     # executa em modo headless (CI)
+npm run dev
 ```
 
----
-
-## Estrutura do Projeto
-
+Aí abre um terceiro terminal e roda:
+```bash
+cd frontend
+npm run cy:open
 ```
-.
-├── backend/
-│   ├── prisma/
-│   │   ├── schema.prisma    # modelos do banco (User, Product, Order, OrderItem)
-│   │   └── seed.js          # dados iniciais
-│   ├── src/
-│   │   ├── controllers/     # lógica de negócio
-│   │   ├── middleware/      # autenticação JWT
-│   │   ├── routes/          # definição das rotas
-│   │   ├── auth.test.js     # testes de autenticação
-│   │   ├── products.test.js # testes de produtos
-│   │   └── orders.test.js   # testes de pedidos
-│   ├── .env.example         # modelo de variáveis de ambiente
-│   └── .env.test            # variáveis para ambiente de teste
-└── frontend/
-    ├── src/
-    │   ├── components/      # Layout, PrivateRoute
-    │   ├── context/         # AuthContext (JWT)
-    │   ├── pages/           # Login, Register, Dashboard, Products, Orders
-    │   └── services/        # cliente Axios configurado
-    └── cypress/
-        └── e2e/             # testes automatizados E2E
-```
+
+Vai abrir uma janela do Cypress. Clica em **E2E Testing**, escolhe o navegador (Chrome, Edge, etc) e clica em **Start**. Depois é só clicar nos arquivos de teste (`auth.cy.js`, `products.cy.js`) para rodar.

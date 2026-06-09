@@ -50,10 +50,10 @@ describe('CRUD de Produtos (admin)', () => {
     cy.get('[data-cy="product-save-btn"]').click();
     cy.contains('criado com sucesso').should('exist');
 
+    cy.on('window:confirm', () => true);
     cy.contains('[data-cy="product-row"]', name).within(() => {
       cy.get('[data-cy="btn-delete-product"]').click();
     });
-    cy.on('window:confirm', () => true);
     cy.contains('excluído com sucesso').should('exist');
   });
 });

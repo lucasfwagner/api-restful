@@ -48,6 +48,11 @@ async function createOrder(req, res) {
     return res.status(400).json({ error: 'Itens do pedido são obrigatórios' });
   }
 
+  const invalidItem = items.find((i) => !i.productId || !Number.isInteger(Number(i.quantity)) || Number(i.quantity) < 1);
+  if (invalidItem) {
+    return res.status(400).json({ error: 'Cada item deve ter productId e quantidade maior que zero' });
+  }
+
   try {
     const productIds = items.map((i) => i.productId);
     const products = await prisma.product.findMany({ where: { id: { in: productIds } } });
